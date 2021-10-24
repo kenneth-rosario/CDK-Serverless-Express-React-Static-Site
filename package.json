@@ -1,0 +1,33 @@
+{
+  "name": "notaso2.0",
+  "version": "0.1.0",
+  "bin": {
+    "infra": "infrastructure/bin/app.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.129.0",
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "aws-cdk": "1.129.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.129.0",
+    "@aws-cdk/aws-lambda": "^1.129.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.129.0",
+    "@aws-cdk/aws-s3": "^1.129.0",
+    "@aws-cdk/core": "1.129.0",
+    "@types/aws-lambda": "^8.10.84",
+    "@vendia/serverless-express": "^4.5.2",
+    "source-map-support": "^0.5.16"
+  }
+}
