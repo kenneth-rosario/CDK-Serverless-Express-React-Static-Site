@@ -8,6 +8,7 @@ import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs';
 import * as path from 'path'
 import { SecretValue } from '@aws-cdk/core';
 import { CdkProject, ReactProject } from '../lib/projects';
+import { CodeBuildStep, CodePipeline, CodePipelineFileSet, CodePipelineSource, ShellStep } from '@aws-cdk/pipelines';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -36,10 +37,9 @@ export class InfraStack extends cdk.Stack {
     // Pipeline
     const sourceArtifact = new codepipeline.Artifact();
     const reactStaticSite = new codepipeline.Artifact();
-    const cdkOut = new codepipeline.Artifact();
 
     const project = new ReactProject(this);
-    const cdkProject = new CdkProject(this);
+    const cdkBuildProject = new CdkProject(this);
     
     const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
       // The pipeline name
@@ -60,20 +60,24 @@ export class InfraStack extends cdk.Stack {
           ]
         },
         {
-          stageName: "Build",
+          stageName: "InfraUpdate",
+          actions: [
+            new codepipeline_actions.CodeBuildAction({
+              input: sourceArtifact,
+              project: cdkBuildProject,
+              actionName: "CDKBuild"
+            })
+          ]
+        },
+        {
+          stageName: "CodeBuild",
           actions: [
             new codepipeline_actions.CodeBuildAction({
               input: sourceArtifact,
               project: project,
               actionName: "ReactBuild",
               outputs: [reactStaticSite]
-            }),
-            new codepipeline_actions.CodeBuildAction({
-              input:sourceArtifact,
-              project: cdkProject,
-              actionName: "CDKBuild",
-              outputs: [cdkOut]
-            })  
+            })
           ]
         },
         {
@@ -83,16 +87,11 @@ export class InfraStack extends cdk.Stack {
               actionName: "ReactDeploy",
               input: reactStaticSite,
               bucket: staticS3
-            }),
-            new codepipeline_actions.CloudFormationCreateUpdateStackAction({
-              actionName: "CdkDeploy",
-              templatePath: cdkOut.atPath("InfraStack.template.json"),
-              stackName: "InfraStack",
-              adminPermissions: true,
             })
           ]
         }
       ]
     })
+
   }
 }

@@ -5,7 +5,7 @@ import { Construct } from "@aws-cdk/core";
 export class ReactProject extends PipelineProject {
     constructor(scope: Construct) {
         super(scope, 'ReactProject', {
-            buildSpec: BuildSpec.fromObjectToYaml({
+            buildSpec: BuildSpec.fromObject({
                 version: 0.2,
                 phases: {
                     install: {
@@ -36,7 +36,39 @@ export class ReactProject extends PipelineProject {
 export class CdkProject extends PipelineProject {
     constructor(scope: Construct) {
         super(scope, 'CdkProject', {
-            buildSpec: BuildSpec.fromObjectToYaml({
+            buildSpec: BuildSpec.fromObject({
+                version: 0.2,
+                phases: {
+                    install: {
+                        runtime_versions: {
+                            nodejs: "14.x"
+                        },
+                        commands: [
+                            "npm install && cd ${CODEBUILD_SRC_DIR}/backend && npm install && cd .."
+                        ]
+                    },
+                    build: {
+                        commands: [
+                            "cd ${CODEBUILD_SRC_DIR}",
+                            "npm run build",
+                            "npm run cdk synth"
+                        ]
+                    },
+                    post_build: {
+                        commands: [
+                            "npm run cdk deploy InfraStack --require-approval=never --verbose"
+                        ]
+                    }
+                }
+            })
+        })
+    }
+}
+
+export class CdkDeployProject extends PipelineProject {
+    constructor(scope: Construct) {
+        super(scope, 'CdkProject', {
+            buildSpec: BuildSpec.fromObject({
                 version: 0.2,
                 phases: {
                     install: {
@@ -63,4 +95,4 @@ export class CdkProject extends PipelineProject {
             })
         })
     }
-}
+} 
