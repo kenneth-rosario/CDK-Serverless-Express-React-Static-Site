@@ -20,12 +20,12 @@ export class ReactProject extends PipelineProject {
                         commands: [
                             "cd ${CODEBUILD_SRC_DIR}/frontend && npm run build && cd .."
                         ]
-                    },
-                    artifacts:{
-                        files: [
-                            "${CODEBUILD_SRC_DIR}/frontend/out/**/*"
-                        ]
                     }
+                },
+                artifacts:{
+                    files: [
+                        "${CODEBUILD_SRC_DIR}/frontend/out/**/*"
+                    ]
                 }
             })
         })
@@ -54,12 +54,11 @@ export class CdkProject extends PipelineProject {
                             "npm run cdk synth"
                         ]
                     },
-                    artifacts:{
-                        "base-directory": "${CODEBUILD_SRC_DIR}",
-                        files: [
-                            "cdk.out/**/*",
-                        ]
-                    }
+                },
+                artifacts:{
+                    files: [
+                        "cdk.out/**/*",
+                    ]
                 }
             })
         })
