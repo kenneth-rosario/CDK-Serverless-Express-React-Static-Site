@@ -36,6 +36,9 @@ export class ReactProject extends PipelineProject {
 export class CdkProject extends PipelineProject {
     constructor(scope: Construct) {
         super(scope, 'CdkProject', {
+            environment: {
+                privileged: true,
+            },
             buildSpec: BuildSpec.fromObject({
                 version: 0.2,
                 phases: {

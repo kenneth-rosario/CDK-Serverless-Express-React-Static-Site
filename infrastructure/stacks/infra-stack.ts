@@ -67,7 +67,8 @@ export class InfraStack extends cdk.Stack {
               project: cdkBuildProject,
               actionName: "CDKBuild"
             })
-          ]
+          ],
+          
         },
         {
           stageName: "CodeBuild",
