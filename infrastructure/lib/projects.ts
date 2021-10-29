@@ -47,7 +47,7 @@ export class CdkProject extends PipelineProject {
                             nodejs: "14.x"
                         },
                         commands: [
-                            "npm install && cd ${CODEBUILD_SRC_DIR}/backend && npm install && cd .."
+                            "npm run prep-install"
                         ]
                     },
                     build: {

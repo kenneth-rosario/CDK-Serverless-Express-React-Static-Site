@@ -4,24 +4,24 @@ import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as s3 from '@aws-cdk/aws-s3'
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
-import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs';
 import * as path from 'path'
 import { SecretValue } from '@aws-cdk/core';
 import { CdkProject, ReactProject } from '../lib/projects';
-import { CodeBuildStep, CodePipeline, CodePipelineFileSet, CodePipelineSource, ShellStep } from '@aws-cdk/pipelines';
+import { CodePipeline } from '@aws-cdk/pipelines';
+import { pipeline } from 'stream';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const parentPath = path.join(process.cwd(), 'backend/src/serverless.ts')
+    const backendCode = path.join(process.cwd(), 'backend/bundle')
 
-    const expressBackend = new NodejsFunction(this, 'express-backend', {
+    const expressBackend = new lambda.Function(this, 'express-backend', {
       memorySize: 1024,
       timeout: cdk.Duration.seconds(5),
       runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'handler',
-      entry: path.join(parentPath),
+      code: new lambda.AssetCode(backendCode),
+      handler: 'serverless.handler',
     });
     
     const api = new apigateway.LambdaRestApi(this, 'backend', {
@@ -68,7 +68,6 @@ export class InfraStack extends cdk.Stack {
               actionName: "CDKBuild"
             })
           ],
-          
         },
         {
           stageName: "CodeBuild",

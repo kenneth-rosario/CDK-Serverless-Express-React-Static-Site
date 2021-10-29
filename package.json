@@ -5,10 +5,14 @@
     "infra": "infrastructure/bin/app.js"
   },
   "scripts": {
+    "prep-install": "npm install && cd ./backend && npm install && cd ..",
+    "prep": "cdk synth",
+    "deploy": "cdk deploy InfraStack",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "build-backend": "cd backend && npm run bundle && cd .."
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.129.0",
