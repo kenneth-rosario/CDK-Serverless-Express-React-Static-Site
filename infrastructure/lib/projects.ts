@@ -54,6 +54,7 @@ export class CdkProject extends PipelineProject {
                         commands: [
                             "cd ${CODEBUILD_SRC_DIR}",
                             "npm run build",
+                            "npm run build-backend",
                             "npm run cdk synth"
                         ]
                     },
@@ -67,35 +68,3 @@ export class CdkProject extends PipelineProject {
         })
     }
 }
-
-export class CdkDeployProject extends PipelineProject {
-    constructor(scope: Construct) {
-        super(scope, 'CdkProject', {
-            buildSpec: BuildSpec.fromObject({
-                version: 0.2,
-                phases: {
-                    install: {
-                        runtime_versions: {
-                            nodejs: "14.x"
-                        },
-                        commands: [
-                            "npm install && cd ${CODEBUILD_SRC_DIR}/backend && npm install && cd .."
-                        ]
-                    },
-                    build: {
-                        commands: [
-                            "cd ${CODEBUILD_SRC_DIR}",
-                            "npm run build",
-                            "npm run cdk synth"
-                        ]
-                    },
-                },
-                artifacts:{
-                    files: [
-                        "cdk.out/**/*",
-                    ]
-                }
-            })
-        })
-    }
-} 
