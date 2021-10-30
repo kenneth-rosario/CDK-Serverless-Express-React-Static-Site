@@ -25,8 +25,9 @@ export class ReactProject extends PipelineProject {
                     }
                 },
                 artifacts:{
+                    "base-directory":"${CODEBUILD_SRC_DIR}/frontend/out",
                     files: [
-                        "${CODEBUILD_SRC_DIR}/frontend/out/**/*"
+                        "**/*"
                     ]
                 }
             })
