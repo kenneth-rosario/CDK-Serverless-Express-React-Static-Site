@@ -75,7 +75,6 @@ export class InfraStack extends cdk.Stack {
             input: reactStaticSite,
             bucket: staticS3,
             extract: true,
-            objectKey:"/out"
           })
         ]
     })
