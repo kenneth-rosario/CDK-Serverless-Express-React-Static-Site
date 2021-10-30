@@ -9,6 +9,7 @@ export class ReactProject extends PipelineProject {
                 version: 0.2,
                 phases: {
                     install: {
+                        "on-failure":"ABORT",
                         runtime_versions: {
                             nodejs: "14.x"
                         },
@@ -17,8 +18,9 @@ export class ReactProject extends PipelineProject {
                         ]
                     },
                     build: {
+                        "on-failure":"ABORT",
                         commands: [
-                            "cd ${CODEBUILD_SRC_DIR}/frontend && npm run build && cd .."
+                            "npm run build-frontend"
                         ]
                     }
                 },
@@ -26,43 +28,6 @@ export class ReactProject extends PipelineProject {
                     files: [
                         "${CODEBUILD_SRC_DIR}/frontend/out/**/*"
                     ]
-                }
-            })
-        })
-    }
-}
-
-
-export class CdkProject extends PipelineProject {
-    constructor(scope: Construct) {
-        super(scope, 'CdkProject', {
-            environment: {
-                privileged: true,
-            },
-            buildSpec: BuildSpec.fromObject({
-                version: 0.2,
-                phases: {
-                    install: {
-                        runtime_versions: {
-                            nodejs: "14.x"
-                        },
-                        commands: [
-                            "npm run prep-install"
-                        ]
-                    },
-                    build: {
-                        commands: [
-                            "cd ${CODEBUILD_SRC_DIR}",
-                            "npm run build",
-                            "npm run build-backend",
-                            "npm run cdk synth"
-                        ]
-                    },
-                    post_build: {
-                        commands: [
-                            "npm run cdk deploy InfraStack --require-approval=never --verbose"
-                        ]
-                    }
                 }
             })
         })

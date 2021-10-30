@@ -5,10 +5,8 @@ import * as s3 from '@aws-cdk/aws-s3'
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
 import * as path from 'path'
-import { SecretValue } from '@aws-cdk/core';
-import { CdkProject, ReactProject } from '../lib/projects';
-import { CodePipeline } from '@aws-cdk/pipelines';
-import { pipeline } from 'stream';
+import * as pipelines from '@aws-cdk/pipelines';
+import { ReactProject } from '../lib/projects';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -34,63 +32,50 @@ export class InfraStack extends cdk.Stack {
       websiteIndexDocument: 'index.html'
     })
 
-    // Pipeline
-    const sourceArtifact = new codepipeline.Artifact();
-    const reactStaticSite = new codepipeline.Artifact();
-
-    const project = new ReactProject(this);
-    const cdkBuildProject = new CdkProject(this);
+    const input = pipelines.CodePipelineSource.gitHub('kenneth-rosario/Notaso2.0', 'main')
     
-    const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
-      // The pipeline name
-      pipelineName: 'FirstPipeline',
-      crossAccountKeys: false,
-      stages: [
-        {
-          stageName: "Source",
-          actions: [
-            new codepipeline_actions.GitHubSourceAction({
-              owner: "kenneth-rosario",
-              repo: "Notaso2.0",
-              oauthToken: SecretValue.secretsManager('github-token'),
-              actionName: "GithubRepo",
-              branch: 'main',
-              output: sourceArtifact
-            })
-          ]
-        },
-        {
-          stageName: "InfraUpdate",
-          actions: [
-            new codepipeline_actions.CodeBuildAction({
-              input: sourceArtifact,
-              project: cdkBuildProject,
-              actionName: "CDKBuild"
-            })
-          ],
-        },
-        {
-          stageName: "CodeBuild",
-          actions: [
-            new codepipeline_actions.CodeBuildAction({
-              input: sourceArtifact,
-              project: project,
-              actionName: "ReactBuild",
-              outputs: [reactStaticSite]
-            })
-          ]
-        },
-        {
-          stageName: "Deploy",
-          actions: [
-            new codepipeline_actions.S3DeployAction({
-              actionName: "ReactDeploy",
-              input: reactStaticSite,
-              bucket: staticS3
-            })
-          ]
-        }
-      ]
+    const codePipeline = new pipelines.CodePipeline(this, 'CDKPipeline', {
+      synth: new pipelines.ShellStep('Synth', {
+        input: input,
+        commands: [
+          'npm run prep-install',
+          'npm run build-backend',
+          'npx cdk synth'
+        ]
+      }),
+      selfMutation: true,
+    })
+
+    codePipeline.buildPipeline()
+
+    const regularPipeline = codePipeline.pipeline
+
+    // Continue Pipeline
+    const sourceArtifact = regularPipeline.stages[0].actions[0].actionProperties.outputs![0]
+    const reactStaticSite = new codepipeline.Artifact();
+    const project = new ReactProject(this);
+
+    regularPipeline.addStage({
+        stageName: 'CodeBuild',
+        actions: [
+          new codepipeline_actions.CodeBuildAction({
+            input: sourceArtifact,
+            project: project,
+            actionName: "ReactBuild",
+            outputs: [reactStaticSite]
+          })
+        ]
+    })
+
+    regularPipeline.addStage({
+        stageName: "Deploy",
+        actions: [
+          new codepipeline_actions.S3DeployAction({
+            actionName: "ReactDeploy",
+            input: reactStaticSite,
+            bucket: staticS3
+          })
+        ]
     })
 
   }
