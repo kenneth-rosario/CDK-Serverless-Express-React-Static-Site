@@ -7,7 +7,6 @@ import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
 import * as path from 'path'
 import * as pipelines from '@aws-cdk/pipelines';
 import { ReactProject } from '../lib/projects';
-import { BlockPublicAccess } from '@aws-cdk/aws-s3';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -75,8 +74,7 @@ export class InfraStack extends cdk.Stack {
             actionName: "ReactDeploy",
             input: reactStaticSite,
             bucket: staticS3,
-            extract: true,
-            objectKey: ""
+            extract: true
           })
         ]
     })
