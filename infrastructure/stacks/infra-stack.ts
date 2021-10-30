@@ -7,6 +7,7 @@ import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
 import * as path from 'path'
 import * as pipelines from '@aws-cdk/pipelines';
 import { ReactProject } from '../lib/projects';
+import { BlockPublicAccess } from '@aws-cdk/aws-s3';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -29,7 +30,7 @@ export class InfraStack extends cdk.Stack {
     // Static site
     const staticS3 = new s3.Bucket(this, 'test-bucket', {
       publicReadAccess: true,
-      websiteIndexDocument: 'index.html'
+      websiteIndexDocument: 'index.html',
     })
 
     const input = pipelines.CodePipelineSource.gitHub('kenneth-rosario/Notaso2.0', 'main')
@@ -73,7 +74,9 @@ export class InfraStack extends cdk.Stack {
           new codepipeline_actions.S3DeployAction({
             actionName: "ReactDeploy",
             input: reactStaticSite,
-            bucket: staticS3
+            bucket: staticS3,
+            extract: true,
+            objectKey: ""
           })
         ]
     })
