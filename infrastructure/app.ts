@@ -6,7 +6,7 @@ import * as stacks from './stacks'
 const app = new cdk.App();
 
 // Complete infrastructure stack 
-new stacks.PipelineStack(app, 'InfraStack');
+new stacks.PipelineStack(app, 'PipelineStack');
 
 // Complete serverless backend stack
 new stacks.ServerlessStack(app, 'ServerlessBackend')
