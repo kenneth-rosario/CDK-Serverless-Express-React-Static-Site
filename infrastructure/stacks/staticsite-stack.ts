@@ -3,7 +3,7 @@ import * as s3 from '@aws-cdk/aws-s3'
 import * as s3deploy from '@aws-cdk/aws-s3-deployment'
 import * as path from 'path'
 
-export class StaticS3ReactStack extends cdk.Stack {
+export default class StaticS3ReactStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props)
         // Next out folder

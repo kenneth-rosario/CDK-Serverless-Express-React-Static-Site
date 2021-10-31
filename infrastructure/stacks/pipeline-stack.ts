@@ -1,9 +1,9 @@
 import * as cdk from '@aws-cdk/core';
 import * as pipelines from '@aws-cdk/pipelines';
-import { ServerlessBackendStage } from '../stages/backend-stage';
-import { StaticSiteStage } from '../stages/staticsite-stage';
+import ServerlessBackendStage from '../stages/backend-stage';
+import StaticSiteStage from '../stages/staticsite-stage';
 
-export class InfraStack extends cdk.Stack {
+export default class PipelineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
     // Get input from github web hook
@@ -18,7 +18,7 @@ export class InfraStack extends cdk.Stack {
           'npm run prep-install',
           'npm run build-backend',
           'npm run build-frontend',
-          'npm run cdk synth InfraStack'
+          'npm run cdk synth PipelineStack'
         ]
       }),
       selfMutation: true,
