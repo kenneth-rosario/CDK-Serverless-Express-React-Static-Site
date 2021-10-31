@@ -18,7 +18,7 @@ export class InfraStack extends cdk.Stack {
           'npm run prep-install',
           'npm run build-backend',
           'npm run build-frontend',
-          'npx cdk synth'
+          'npm run cdk synth InfraStack'
         ]
       }),
       selfMutation: true,
