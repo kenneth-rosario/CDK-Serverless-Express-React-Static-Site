@@ -2,7 +2,7 @@
   "name": "notaso2.0",
   "version": "0.1.0",
   "bin": {
-    "infra": "infrastructure/bin/app.js"
+    "infra": "infrastructure/app.js"
   },
   "scripts": {
     "prep-install": "npm install && cd ./backend && npm install && cd ../frontend && npm install && cd ..",
