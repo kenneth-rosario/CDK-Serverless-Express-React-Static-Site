@@ -32,7 +32,8 @@ export class InfraStack extends cdk.Stack {
       websiteIndexDocument: 'index.html',
     })
 
-    const input = pipelines.CodePipelineSource.gitHub('kenneth-rosario/Notaso2.0', 'main')
+    const input = pipelines.CodePipelineSource
+      .gitHub('kenneth-rosario/CDK-Serverless-Express-React-Static-Site', 'main')
     
     const codePipeline = new pipelines.CodePipeline(this, 'CDKPipeline', {
       synth: new pipelines.ShellStep('Synth', {
