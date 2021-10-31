@@ -5,9 +5,7 @@
     "infra": "infrastructure/bin/app.js"
   },
   "scripts": {
-    "prep-install": "npm install && cd ./backend && npm install && cd ..",
-    "prep": "cdk synth",
-    "deploy": "cdk deploy InfraStack",
+    "prep-install": "npm install && cd ./backend && npm install && cd ../frontend && npm install && cd ..",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
@@ -26,16 +24,14 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "^1.129.0",
-    "@aws-cdk/aws-codebuild": "^1.129.0",
-    "@aws-cdk/aws-codepipeline": "^1.129.0",
-    "@aws-cdk/aws-codepipeline-actions": "^1.129.0",
+    "@aws-cdk/aws-apigateway": "^1.130.0",
     "@aws-cdk/aws-iam": "^1.130.0",
-    "@aws-cdk/aws-lambda": "^1.129.0",
-    "@aws-cdk/aws-lambda-nodejs": "^1.129.0",
-    "@aws-cdk/aws-s3": "^1.129.0",
-    "@aws-cdk/core": "1.129.0",
-    "@aws-cdk/pipelines": "^1.129.0",
+    "@aws-cdk/aws-lambda": "^1.130.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.130.0",
+    "@aws-cdk/aws-s3": "^1.130.0",
+    "@aws-cdk/aws-s3-deployment": "^1.130.0",
+    "@aws-cdk/core": "1.130.0",
+    "@aws-cdk/pipelines": "^1.130.0",
     "@types/aws-lambda": "^8.10.84",
     "source-map-support": "^0.5.16"
   }
