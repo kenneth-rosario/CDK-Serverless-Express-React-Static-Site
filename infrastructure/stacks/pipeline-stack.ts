@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as pipelines from '@aws-cdk/pipelines';
+import { GITHUB_REPO } from '../lib/constants';
 import ServerlessBackendStage from '../stages/backend-stage';
 import StaticSiteStage from '../stages/staticsite-stage';
 
@@ -8,7 +9,7 @@ export default class PipelineStack extends cdk.Stack {
     super(scope, id, props)
     // Get input from github web hook
     const input = pipelines.CodePipelineSource
-      .gitHub('kenneth-rosario/CDK-Serverless-Express-React-Static-Site', 'main')
+      .gitHub(GITHUB_REPO, 'main')
     
     // Define initial code pipeline
     const codePipeline = new pipelines.CodePipeline(this, 'CDKPipeline', {
