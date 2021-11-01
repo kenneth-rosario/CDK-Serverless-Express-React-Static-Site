@@ -1,13 +1,13 @@
 import * as cdk from '@aws-cdk/core'
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigateway from '@aws-cdk/aws-apigateway';
-import * as path from 'path';
+import { SERVERLESS_BACKEND_OUT } from '../lib/constants';
 
 export default class ServerlessStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props)
         // backend code
-        const backendCode = path.join(process.cwd(), 'backend/bundle')
+        const backendCode = SERVERLESS_BACKEND_OUT
         // expressBackend
         const expressBackend = new lambda.Function(this, 'express-backend', {
             memorySize: 1024,
@@ -17,7 +17,7 @@ export default class ServerlessStack extends cdk.Stack {
             handler: 'serverless.handler',
         });
         // lambda rest api
-        new apigateway.LambdaRestApi(this, 'backend', {
+        new apigateway.LambdaRestApi(this, 'ServerlessBackend', {
             handler: expressBackend,
             proxy: true
         })
